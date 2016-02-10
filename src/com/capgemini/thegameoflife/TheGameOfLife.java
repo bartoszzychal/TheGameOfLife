@@ -1,118 +1,86 @@
 package com.capgemini.thegameoflife;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class TheGameOfLife {
 
-	Logger logger = Logger.getGlobal();
-	private final Integer CELL_DEAD_HAS_ONE_NEIGHBOR = 1;
 	private final Integer CELL_ALIVE_HAS_TWO_NEIGHBORS = 2;
 	private final Integer CELL_ALIVE_HAS_THREE_NEIGHBORS = 3;
-	private final Integer CELL_DEAD_HAS_AT_LEAST_FOUR_NEIGHBORS = 4;
+	private Board board;
 	
-	private Map<Cell,State> mapOfCellState;
-	private Integer gameBoardX = 4;
-	private Integer gameBoardY = 4;
-	
-	public TheGameOfLife(){
-		this.mapOfCellState = new HashMap<>();
-		generateGameBoard();
-	}
-
-	private void generateGameBoard() {
-		for (int x = 0; x < gameBoardX; x++) {
-			for (int y = 0; y < gameBoardY; y++) {
-				mapOfCellState.put(new Cell(x, y), State.DEAD);
-			}
-		}
+	public TheGameOfLife(Integer sizeX,Integer sizeY){
+		board = new Board(sizeX, sizeY);
 	}
 	
 	public void setInitialState(List<Cell> params) {
 		for (Cell cell : params) {
-			boolean cellExists = mapOfCellState.containsKey(cell);
+			boolean cellExists = board.containsKey(cell);
 			
 			if(!cellExists){
-				throw new IllegalArgumentException("The cell not exist");
+				throw new IllegalArgumentException("The cell not exist.");
 			}
 			
-			mapOfCellState.replace(cell, State.ALIVE);
-			logger.info("Initial "+cell.toString()+State.ALIVE);
-
+			board.replace(cell, State.ALIVE);
 		}
 	}
 
-	public void nextStates(){
-		Map<Cell, State> newMapOfCellState = new HashMap<>();
-		for(Map.Entry<Cell, State> entry: mapOfCellState.entrySet()){
+	public void evolve(){
+		Board newBoard = board.getNewClearBoard();
+		for(Map.Entry<Cell, State> entry: board.entrySet()){
 			Cell cell = entry.getKey();
 			State newStateForCell = getNewStateForCell(cell);
-			newMapOfCellState.put(cell, newStateForCell);
+			newBoard.replace(cell, newStateForCell);
 		}
-		mapOfCellState = newMapOfCellState;
+		board = newBoard;
 	}
 	
 
 	private State getNewStateForCell(Cell cell) {
-		Integer numberOfLiveNeighborCells = getNumberOfLiveNeighborCells(cell);
-		State stateOfActualCell = mapOfCellState.get(cell);
-		
-		if(CELL_DEAD_HAS_ONE_NEIGHBOR.equals(numberOfLiveNeighborCells) ||
-				CELL_DEAD_HAS_AT_LEAST_FOUR_NEIGHBORS <= numberOfLiveNeighborCells){
-			return State.DEAD;
+		Integer numberOfLifeNeighborCells = getNumberOfLifeNeighborCells(cell);
+		State actualStateOfCell = board.get(cell);
+		State newState = State.DEAD;
+				
+		if(CELL_ALIVE_HAS_THREE_NEIGHBORS.equals(numberOfLifeNeighborCells)){
+			newState = State.ALIVE;
 		}
 		
-		if(CELL_ALIVE_HAS_TWO_NEIGHBORS.equals(numberOfLiveNeighborCells) && State.DEAD.equals(stateOfActualCell) ){
-			return State.DEAD;
-		}
-		
-		if(CELL_ALIVE_HAS_THREE_NEIGHBORS.equals(numberOfLiveNeighborCells)){
-			return State.ALIVE;
-		}
-		
-		if(CELL_ALIVE_HAS_TWO_NEIGHBORS.equals(numberOfLiveNeighborCells) && State.ALIVE.equals(stateOfActualCell) ){
-			return State.ALIVE;
+		if(CELL_ALIVE_HAS_TWO_NEIGHBORS.equals(numberOfLifeNeighborCells) && State.ALIVE.equals(actualStateOfCell) ){
+			newState = State.ALIVE;
 		}
 
-		return State.DEAD;
+		return newState;
 	}
 
-	private Integer getNumberOfLiveNeighborCells(Cell cell) {
+	private Integer getNumberOfLifeNeighborCells(Cell cell) {
 		Integer x = cell.getX();
 		Integer y = cell.getY();
-		Integer numberOfLiveNeighborCells = Integer.valueOf(0);
+		Integer numberOfLifeNeighborCells = Integer.valueOf(0);
 		
-		for (Integer neigborX = x-1; neigborX <= x+1; neigborX++) {
-			
-			for (Integer neigborY = y-1; neigborY <= y+1; neigborY++) {
+		for (Integer xNeigbor = x-1; xNeigbor <= x+1; xNeigbor++) {
+			for (Integer yNeigbor = y-1; yNeigbor <= y+1; yNeigbor++) {
 				
-				if(!neigborX.equals(x) || !neigborY.equals(y)){
-					State state = mapOfCellState.get(new Cell(neigborX, neigborY));
+				if(!xNeigbor.equals(x) || !yNeigbor.equals(y)){
+					State state = board.get(new Cell(xNeigbor, yNeigbor));
 					
 					if(State.ALIVE.equals(state)){
-						numberOfLiveNeighborCells++;
-					}
-					
-				}
-				
-			}
-			
+						numberOfLifeNeighborCells++;
+					}	
+				}	
+			}	
 		}
-		
-		return numberOfLiveNeighborCells;
+		return numberOfLifeNeighborCells;
 	}
 
-	public List<Cell> getPositionsOfLiveCell() {
-		List<Cell> listOfLiveCell = new ArrayList<>();
-		for(Map.Entry<Cell, State> entry: mapOfCellState.entrySet()){
+	public List<Cell> getAliveCell() {
+		List<Cell> listOfAliveCell = new ArrayList<>();		
+		for(Map.Entry<Cell, State> entry: board.entrySet()){
 			if(entry.getValue().equals(State.ALIVE)){
-				listOfLiveCell.add(entry.getKey());
+				listOfAliveCell.add(entry.getKey());
 			}
 		}
-		return listOfLiveCell;
+		return listOfAliveCell;
 	}
 
 }
