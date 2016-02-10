@@ -1,7 +1,5 @@
 package com.capgemini.thegameoflife;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -15,13 +13,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class TheGameOfLifeTest2 {
+public class TheGameOfLifeTest3 {
 
 	TheGameOfLife game;
 	static Logger logger;
 	private List<Cell> params, expected;
 
-	public TheGameOfLifeTest2(List<Cell> params, List<Cell> expected) {
+	public TheGameOfLifeTest3(List<Cell> params, List<Cell> expected) {
 		this.params = params;
 		this.expected = expected;
 	}
@@ -29,18 +27,15 @@ public class TheGameOfLifeTest2 {
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] {
-			{
-					Arrays.asList(new Cell(1, 0), new Cell(2, 0), new Cell(1, 1), new Cell(2, 1), new Cell(2, 2)),
-					Arrays.asList(new Cell(2, 0), new Cell(3, 1), new Cell(2, 2)) 
-				}
-				
+			{ 
+				Arrays.asList(new Cell(2, 2)), Arrays.asList() 
+				}, 			
 		});
-
 	}
 
 	@Before
 	public void before() {
-		game = new TheGameOfLife(10,10);
+		game = new TheGameOfLife(2,2);
 	}
 
 	@After
@@ -48,15 +43,12 @@ public class TheGameOfLifeTest2 {
 		game = null;
 	}
 
-	@Test
-	public void shouldBeListWithAllTheSameObjects() {
+	@Test(expected = IllegalArgumentException.class)
+	public void	shouldBeIllegalArgumentException() {
 		// when
 		game.setInitialState(params);
-		game.evolve();
-		game.evolve();
-		List<Cell> cells = game.getAliveCell();
-		// then
-		assertEquals(cells.containsAll(expected),expected.containsAll(cells));
+		game.evolve();	
+		//then exception
 	}
 
 }

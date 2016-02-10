@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,7 +56,7 @@ public class TheGameOfLifeTest {
 	}
 
 	@Test
-	public void testTheLive() {
+	public void shouldBeListWithAllTheSameObjects() {
 		// when
 		game.setInitialState(params);
 		game.evolve();
