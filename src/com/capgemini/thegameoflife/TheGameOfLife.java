@@ -1,4 +1,4 @@
-package com.capgemini.thegameoflive;
+package com.capgemini.thegameoflife;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class TheGameOfLive {
+public class TheGameOfLife {
 
 	Logger logger = Logger.getGlobal();
 	private final Integer CELL_DEAD_HAS_ONE_NEIGHBOR = 1;
@@ -18,7 +18,7 @@ public class TheGameOfLive {
 	private Integer gameBoardX = 4;
 	private Integer gameBoardY = 4;
 	
-	public TheGameOfLive(){
+	public TheGameOfLife(){
 		this.mapOfCellState = new HashMap<>();
 		generateGameBoard();
 	}

@@ -1,11 +1,9 @@
-package com.capgemini.thegameoflive;
+package com.capgemini.thegameoflife;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,13 +16,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class TheGameOfLiveTest {
+public class TheGameOfLifeTest {
 
-	TheGameOfLive game;
+	TheGameOfLife game;
 	static Logger logger;
 	private List<Cell> params, expected;
 
-	public TheGameOfLiveTest(List<Cell> params, List<Cell> expected) {
+	public TheGameOfLifeTest(List<Cell> params, List<Cell> expected) {
 		this.params = params;
 		this.expected = expected;
 	}
@@ -35,11 +33,11 @@ public class TheGameOfLiveTest {
 			{ 
 				Arrays.asList(new Cell(0, 0)), Arrays.asList() 
 				}, 
-			{ //cell()
+			{ //life cells die when have only one neighbor, stay alive when have two neighbors, dead cells become a live when have three neighbors 
 				Arrays.asList(new Cell(0, 2), new Cell(1, 1), new Cell(1, 2), new Cell(2, 0)),
 				Arrays.asList(new Cell(0, 2), new Cell(0, 1), new Cell(1, 1), new Cell(1, 2), new Cell(2, 1)) 
 				},
-			{
+			{// life cells die when have four neighbors and dead cells become a live when have three neighbors 
 					Arrays.asList(new Cell(1, 0), new Cell(2, 0), new Cell(1, 1), new Cell(2, 1), new Cell(2, 2)),
 					Arrays.asList(new Cell(1, 0), new Cell(2, 0), new Cell(3, 1), new Cell(1, 2), new Cell(2, 2)) 
 				}
@@ -55,7 +53,7 @@ public class TheGameOfLiveTest {
 
 	@Before
 	public void before() {
-		game = new TheGameOfLive();
+		game = new TheGameOfLife();
 	}
 
 	@After

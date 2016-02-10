@@ -1,4 +1,4 @@
-package com.capgemini.thegameoflive;
+package com.capgemini.thegameoflife;
 
 public class Cell {
 	
