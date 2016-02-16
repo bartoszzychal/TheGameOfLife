@@ -9,16 +9,13 @@ public class Cell {
 		this.y = y;
 	}
 
-	
 	public Integer getX() {
 		return x;
 	}
 
-
 	public Integer getY() {
 		return y;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -50,5 +47,5 @@ public class Cell {
 			return false;
 		return true;
 	}
-	
+
 }
