@@ -1,8 +1,6 @@
 package com.capgemini.thegameoflife;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +29,7 @@ public class TheGameOfLife {
      * @throws IllegalArgumentException for cell with coordinates bigger then board size
      */
     public void setInitialState(List<Cell> lifeCells) {
-    	if(!lifeCells.containsAll(lifeCells)){
+    	if(!board.getAllCellsWithState().keySet().containsAll(lifeCells)){
     		throw new IllegalArgumentException();
     	}
     	lifeCells.stream().forEach((cell)->board.changeStateOfCell(cell, State.ALIVE));
@@ -73,8 +71,6 @@ public class TheGameOfLife {
                 if (xNeigbor != x || yNeigbor != y) {
                     if (State.ALIVE == board.getState(xNeigbor, yNeigbor)) {
                         numberOfLifeNeighborCells+=1;
-                        System.out.println(numberOfLifeNeighborCells);
-
                     }
                 }
             }
