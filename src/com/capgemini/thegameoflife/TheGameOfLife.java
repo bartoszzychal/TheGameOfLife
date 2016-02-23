@@ -2,60 +2,64 @@ package com.capgemini.thegameoflife;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Map;import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-// REVIEW bzychal - please add missing comments for classes and public methods
+/**
+ * TheGameOfLife class allow to set initial state for life cell, evolve, and get state of cells.
+ * @author ZBARTOSZ
+ *
+ */
 public class TheGameOfLife {
 
     private final int CELL_ALIVE_HAS_TWO_NEIGHBORS = 2;
     private final int CELL_ALIVE_HAS_THREE_NEIGHBORS = 3;
     private Board board;
 
-    public TheGameOfLife(Integer sizeX, Integer sizeY) {
-        board = new Board(sizeX, sizeY);
+    /**
+     * Constructor receiving the size of board columns and rows
+     * @param columns Count columns of  board
+     * @param rows	Count rows of board
+     */
+    public TheGameOfLife(Integer columns, Integer rows) {
+        board = new Board(columns, rows);
     }
 
-    public void setInitialState(List<Cell> params) {
-        // REVIEW bzychal - please use Java 8 lambdas and streams here
-        for (Cell cell : params) {
-            boolean cellExists = board.containsCell(cell);
-
-            if (!cellExists) {
-                throw new IllegalArgumentException("The cell not exist.");
-            }
-
-            board.changeStateOfCell(cell, State.ALIVE);
-        }
+    /**
+     * Set the state LIVE for list of cells. Cells must have coordinates not bigger then board size.  
+     * @param lifeCells list of cell, which should be life on begin of game
+     * @throws IllegalArgumentException for cell with coordinates bigger then board size
+     */
+    public void setInitialState(List<Cell> lifeCells) {
+    	if(!lifeCells.containsAll(lifeCells)){
+    		throw new IllegalArgumentException();
+    	}
+    	lifeCells.stream().forEach((cell)->board.changeStateOfCell(cell, State.ALIVE));
     }
 
+    /**
+     * Evolve the state of Cells to next generation 
+     */
     public void evolve() {
         Board newBoard = board.getNewClearBoard();
-        // REVIEW bzychal - why iterating over entries, since only cells are necessary here? please use only keys from
-        // the map
-        for (Map.Entry<Cell, State> entry : board.entrySet()) {
-            Cell cell = entry.getKey();
-            State newStateForCell = getNewStateForCell(cell);
-            newBoard.changeStateOfCell(cell, newStateForCell);
-        }
+        board.getAllCellsWithState()
+        .keySet()
+        .stream()
+        .forEach((cell)->{
+        	newBoard.changeStateOfCell(cell, getNewStateForCell(cell));
+        });
         board = newBoard;
     }
 
     private State getNewStateForCell(Cell cell) {
         int numberOfLifeNeighborCells = getNumberOfLifeNeighborCells(cell);
-        State actualStateOfCell = board.get(cell);
+        State actualStateOfCell = board.getState(cell);
         State newState = State.DEAD;
-
-        // REVIEW bzychal - please add else clause, otherwise not necessary check is performed in the second if clause
         if (CELL_ALIVE_HAS_THREE_NEIGHBORS == numberOfLifeNeighborCells) {
             newState = State.ALIVE;
-        }
-
-        // REVIEW bzychal - please use == to compare enums, it is guaranted that only single enum class is loaded in the
-        // JVM, therefore it is safe to compare it through the reference
-        if (CELL_ALIVE_HAS_TWO_NEIGHBORS == numberOfLifeNeighborCells && State.ALIVE.equals(actualStateOfCell)) {
+        }else if (CELL_ALIVE_HAS_TWO_NEIGHBORS == numberOfLifeNeighborCells && State.ALIVE == actualStateOfCell) {
             newState = State.ALIVE;
         }
-
         return newState;
     }
 
@@ -66,30 +70,29 @@ public class TheGameOfLife {
 
         for (int xNeigbor = x - 1; xNeigbor <= x + 1; xNeigbor++) {
             for (int yNeigbor = y - 1; yNeigbor <= y + 1; yNeigbor++) {
-
                 if (xNeigbor != x || yNeigbor != y) {
-                    // REVIEW bzychal - better would be to ask board for a cell by passing x and y, then the board knows
-                    // the internal representation and uses new cell to fetch the state
-                    State state = board.get(new Cell(xNeigbor, yNeigbor));
+                    if (State.ALIVE == board.getState(xNeigbor, yNeigbor)) {
+                        numberOfLifeNeighborCells+=1;
+                        System.out.println(numberOfLifeNeighborCells);
 
-                    if (State.ALIVE.equals(state)) {
-                        numberOfLifeNeighborCells++;
                     }
                 }
             }
         }
         return numberOfLifeNeighborCells;
     }
-
+    /**
+     * 
+     * @return List of live cell
+     */
     public List<Cell> getAliveCell() {
-        List<Cell> listOfAliveCell = new ArrayList<>();
-        for (Map.Entry<Cell, State> entry : board.entrySet()) {
-            // REVIEW bzychal - please use == to compare enums
-            if (entry.getValue().equals(State.ALIVE)) {
-                listOfAliveCell.add(entry.getKey());
-            }
-        }
-        return listOfAliveCell;
+        return board
+        		.getAllCellsWithState()
+        		.entrySet()
+        		.stream()
+        		.filter((cellEntry)->cellEntry.getValue() == State.ALIVE)
+        		.map((cellEntry)->cellEntry.getKey())
+        		.collect(Collectors.toList());
     }
 
 }

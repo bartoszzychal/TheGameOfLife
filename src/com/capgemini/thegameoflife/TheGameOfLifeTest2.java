@@ -40,7 +40,7 @@ public class TheGameOfLifeTest2 {
 
 	@Before
 	public void before() {
-		game = new TheGameOfLife(10,10);
+		game = new TheGameOfLife(3,3);
 	}
 
 	@After
