@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * TheGameOfLife class allow to set initial state for life cell, evolve, and get state of cells.
+ * TheGameOfLife class allow to set initial state for life cells, evolve, and get state of cells.
  * @author ZBARTOSZ
  *
  */
@@ -29,7 +29,7 @@ public class TheGameOfLife {
      * @throws IllegalArgumentException for cell with coordinates bigger then board size
      */
     public void setInitialState(List<Cell> lifeCells) {
-    	if(!board.getAllCellsWithState().keySet().containsAll(lifeCells)){
+    	if(!board.getAllCells().containsAll(lifeCells)){
     		throw new IllegalArgumentException();
     	}
     	lifeCells.stream().forEach((cell)->board.changeStateOfCell(cell, State.ALIVE));
@@ -40,8 +40,7 @@ public class TheGameOfLife {
      */
     public void evolve() {
         Board newBoard = board.getNewClearBoard();
-        board.getAllCellsWithState()
-        .keySet()
+        board.getAllCells()
         .stream()
         .forEach((cell)->{
         	newBoard.changeStateOfCell(cell, getNewStateForCell(cell));
@@ -79,7 +78,7 @@ public class TheGameOfLife {
     }
     /**
      * 
-     * @return List of live cell
+     * @return List of live cells
      */
     public List<Cell> getAliveCell() {
         return board
