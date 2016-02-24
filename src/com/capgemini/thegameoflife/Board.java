@@ -2,7 +2,6 @@ package com.capgemini.thegameoflife;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 public class Board {
@@ -42,6 +41,10 @@ public class Board {
         return board;
     }
 
+    public Set<Cell> getAllCells() {
+    	return board.keySet();
+    }
+
     public State getState(int x,int y) {
         return board.get(new Cell(x,y));
     }
@@ -49,6 +52,4 @@ public class Board {
     public State getState(Cell cell) {
     	return board.get(cell);
     }
-   
-
 }
