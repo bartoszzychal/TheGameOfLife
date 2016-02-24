@@ -1,6 +1,6 @@
 package com.capgemini.thegameoflife;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class TheGameOfLifeTest2 {
 
 	@Before
 	public void before() {
-		game = new TheGameOfLife(3,3);
+		game = new TheGameOfLife(10,10);
 	}
 
 	@After
@@ -56,7 +56,8 @@ public class TheGameOfLifeTest2 {
 		game.evolve();
 		List<Cell> cells = game.getAliveCell();
 		// then
-		assertEquals(cells.containsAll(expected),expected.containsAll(cells));
+		assertTrue(expected.containsAll(cells));
+		assertTrue(cells.containsAll(expected));
 	}
 
 }
